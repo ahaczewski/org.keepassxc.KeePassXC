@@ -9,8 +9,6 @@ finish-args:
   - --socket=x11
     # Wayland access
   - --socket=wayland
-    # Notification access
-  - --talk-name=org.freedesktop.Notifications
     # Screen Lock Listener
   - --talk-name=org.freedesktop.ScreenSaver
   - --talk-name=org.freedesktop.login1.Manager
