@@ -1,0 +1,38 @@
+From a862a7cc266f3bde1013b26da92dfaabde4f038c Mon Sep 17 00:00:00 2001
+From: AsavarTzeth <asavartzeth@gmail.com>
+Date: Sun, 24 Mar 2019 12:10:35 +0100
+Subject: [PATCH 5/5] Do not allow manual entry of external ssh key
+
+When external private ssh keys are referenced in a keepassxc entry,
+entry must be granted using the filechooser and document portals. This
+is not possible when a user enters an absolute path manually.
+
+By disabling the ability to enter text into this field, a user might be
+inclined to try using the "Browse..." button instead.
+
+This does not solve any issue that might arise from having opened an
+existing database that was created by another package (not using
+namespaces).
+---
+ src/gui/entry/EditEntryWidget.cpp | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/src/gui/entry/EditEntryWidget.cpp b/src/gui/entry/EditEntryWidget.cpp
+index e57bc97d..5aca8652 100644
+--- a/src/gui/entry/EditEntryWidget.cpp
++++ b/src/gui/entry/EditEntryWidget.cpp
+@@ -362,6 +362,11 @@ void EditEntryWidget::setupSSHAgent()
+     m_sshAgentUi->commentTextLabel->setFont(fixedFont);
+     m_sshAgentUi->publicKeyEdit->setFont(fixedFont);
+ 
++#ifdef KEEPASSXC_DIST_FLATPAK
++    // Specifying path manually will not work (must make use of filechooser portal)
++    m_sshAgentUi->externalFileEdit->setEnabled(false);
++#endif
++
+     connect(m_sshAgentUi->attachmentRadioButton, SIGNAL(clicked(bool)), SLOT(updateSSHAgentKeyInfo()));
+     connect(m_sshAgentUi->attachmentComboBox, SIGNAL(currentIndexChanged(int)), SLOT(updateSSHAgentAttachment()));
+     connect(m_sshAgentUi->externalFileRadioButton, SIGNAL(clicked(bool)), SLOT(updateSSHAgentKeyInfo()));
+-- 
+2.21.0
+
